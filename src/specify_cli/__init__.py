@@ -554,7 +554,7 @@ your-project/
 
 ## Need Help?
 
-- Check the [Spec Kit documentation](https://github.com/github/spec-kit)
+- Check the [Spec Kit documentation](https://github.com/mb-etc/spec-kit-etc)
 - Review example specs in the `specs/` folder
 - Ask your AI assistant to explain any command
 '''
@@ -1201,8 +1201,8 @@ def merge_json_files(existing_path: Path, new_content: dict, verbose: bool = Fal
     return merged
 
 def download_template_from_github(ai_assistant: str, download_dir: Path, *, script_type: str = "sh", verbose: bool = True, show_progress: bool = True, client: httpx.Client = None, debug: bool = False, github_token: str = None) -> Tuple[Path, dict]:
-    repo_owner = "github"
-    repo_name = "spec-kit"
+    repo_owner = "mb-etc"
+    repo_name = "spec-kit-etc"
     if client is None:
         client = httpx.Client(verify=ssl_context)
 
@@ -2024,11 +2024,26 @@ def init(
         "",
         f"○ [cyan]/speckit.clarify[/] [bright_black](optional)[/bright_black] - Ask structured questions to de-risk ambiguous areas before planning (run before [cyan]/speckit.plan[/] if used)",
         f"○ [cyan]/speckit.analyze[/] [bright_black](optional)[/bright_black] - Cross-artifact consistency & alignment report (after [cyan]/speckit.tasks[/], before [cyan]/speckit.implement[/])",
-        f"○ [cyan]/speckit.checklist[/] [bright_black](optional)[/bright_black] - Generate quality checklists to validate requirements completeness, clarity, and consistency (after [cyan]/speckit.plan[/])"
+        f"○ [cyan]/speckit.checklist[/] [bright_black](optional)[/bright_black] - Generate quality checklists to validate requirements completeness, clarity, and consistency (after [cyan]/speckit.plan[/])",
+        f"○ [cyan]/speckit.fix[/] [bright_black](optional)[/bright_black] - Diagnose and fix issues with targeted remediation"
     ]
     enhancements_panel = Panel("\n".join(enhancement_lines), title="Enhancement Commands", border_style="cyan", padding=(1,2))
     console.print()
     console.print(enhancements_panel)
+
+    review_lines = [
+        "Quality gates and release preparation [bright_black](run after implementation)[/bright_black]",
+        "",
+        f"○ [cyan]/speckit.review-implementation[/] - Audit code against spec with compliance matrix",
+        f"○ [cyan]/speckit.review-security[/] - CodeGuard-powered security review with language-aware rules",
+        f"○ [cyan]/speckit.review-readiness[/] - Production deployment gates with cutover/rollback runbooks",
+        f"○ [cyan]/speckit.review-uat[/] - Generate UAT plans and manual checklists from acceptance criteria",
+        f"○ [cyan]/speckit.review-summary[/] - Create documentation packs (technical, user, admin guides)",
+        f"○ [cyan]/speckit.release-notes[/] - Generate changelog entries and release notes"
+    ]
+    review_panel = Panel("\n".join(review_lines), title="Review Commands", border_style="magenta", padding=(1,2))
+    console.print()
+    console.print(review_panel)
 
 @app.command()
 def check():
@@ -2097,8 +2112,8 @@ def version():
             pass
     
     # Fetch latest template release version
-    repo_owner = "github"
-    repo_name = "spec-kit"
+    repo_owner = "mb-etc"
+    repo_name = "spec-kit-etc"
     api_url = f"https://api.github.com/repos/{repo_owner}/{repo_name}/releases/latest"
     
     template_version = "unknown"

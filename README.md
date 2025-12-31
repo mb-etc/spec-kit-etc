@@ -169,10 +169,11 @@ The `specify` command supports the following options:
 
 ### Commands
 
-| Command | Description                                                                                                                                             |
-| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `init`  | Initialize a new Specify project from the latest template                                                                                               |
-| `check` | Check for installed tools (`git`, `claude`, `gemini`, `code`/`code-insiders`, `cursor-agent`, `windsurf`, `qwen`, `opencode`, `codex`, `shai`, `qoder`) |
+| Command   | Description                                                                                                                                             |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `init`    | Initialize a new Specify project from the latest template                                                                                               |
+| `check`   | Check for installed tools (`git`, `claude`, `gemini`, `code`/`code-insiders`, `cursor-agent`, `windsurf`, `qwen`, `opencode`, `codex`, `shai`, `qoder`) |
+| `context` | View or update project context (type, description, constraints)                                                                                         |
 
 ### `specify init` Arguments & Options
 
@@ -258,15 +259,50 @@ Essential commands for the Spec-Driven Development workflow:
 | `/speckit.tasks`        | Generate actionable task lists for implementation                        |
 | `/speckit.implement`    | Execute all tasks to build the feature according to the plan             |
 
-#### Optional Commands
+#### Enhancement Commands
 
-Additional commands for enhanced quality and validation:
+Optional commands to improve quality and confidence:
 
-| Command              | Description                                                                                                                          |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `/speckit.clarify`   | Clarify underspecified areas (recommended before `/speckit.plan`; formerly `/quizme`)                                                |
-| `/speckit.analyze`   | Cross-artifact consistency & coverage analysis (run after `/speckit.tasks`, before `/speckit.implement`)                             |
-| `/speckit.checklist` | Generate custom quality checklists that validate requirements completeness, clarity, and consistency (like "unit tests for English") |
+| Command              | Description                                                                                                  |
+| -------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `/speckit.clarify`   | Ask structured questions to de-risk ambiguous areas before planning (run before `/speckit.plan` if used)    |
+| `/speckit.analyze`   | Cross-artifact consistency & alignment report (after `/speckit.tasks`, before `/speckit.implement`)         |
+| `/speckit.checklist` | Generate quality checklists to validate requirements completeness, clarity, and consistency (after `/speckit.plan`) |
+
+#### Review Commands
+
+Comprehensive review suite for quality gates and release preparation:
+
+| Command                        | Description                                                                 |
+| ------------------------------ | --------------------------------------------------------------------------- |
+| `/speckit.review-implementation` | Audit implementation against spec with compliance matrix                   |
+| `/speckit.review-security`       | CodeGuard-powered security review with language-aware rules               |
+| `/speckit.review-readiness`      | Production deployment gates with cutover/rollback runbooks                |
+| `/speckit.review-uat`            | Generate UAT plans and manual checklists from acceptance criteria         |
+| `/speckit.review-summary`        | Create documentation packs (technical, user, admin guides)                |
+| `/speckit.release-notes`         | Generate changelog entries and release notes                              |
+| `/speckit.fix`                   | Diagnose and fix issues with targeted remediation                         |
+
+### `specify context` Options
+
+Manage project context that helps AI assistants provide more accurate specifications:
+
+| Option               | Description                                                              |
+| -------------------- | ------------------------------------------------------------------------ |
+| `<path>`             | Path to the project directory (defaults to current directory)            |
+| `--show`             | Display current project context                                          |
+| `--set-type`         | Set project type: `greenfield`, `brownfield`, or `bluefield`             |
+| `--set-description`  | Update project description                                               |
+| `--add-constraint`   | Add a constraint (e.g., "Must maintain backward compatibility")         |
+| `--remove-constraint`| Remove a constraint by its text                                          |
+
+#### Project Types
+
+| Type          | Description                          | AI Behavior                                       |
+| ------------- | ------------------------------------ | ------------------------------------------------- |
+| `greenfield`  | New project, no legacy               | Clean architecture, full design freedom           |
+| `brownfield`  | Existing system with users           | Backward compatibility, migration plans           |
+| `bluefield`   | New components on existing platform  | Integration points, isolation boundaries          |
 
 ### Environment Variables
 

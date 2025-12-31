@@ -98,18 +98,77 @@ function Get-FeaturePathsEnv {
     $hasGit = Test-HasGit
     $featureDir = Get-FeatureDir -RepoRoot $repoRoot -Branch $currentBranch
     
+    # Get project context
+    $contextFile = Join-Path $repoRoot ".specify/context.yaml"
+    $projectType = "greenfield"
+    $projectDescription = ""
+    $contextExists = $false
+    
+    if (Test-Path $contextFile) {
+        $contextExists = $true
+        $content = Get-Content $contextFile -Raw
+        
+        # Simple YAML parsing for known keys
+        if ($content -match '(?m)^project_type:\s*(.+)$') {
+            $projectType = $matches[1].Trim().Trim('"').Trim("'")
+        }
+        if ($content -match '(?m)^description:\s*(.+)$') {
+            $projectDescription = $matches[1].Trim().Trim('"').Trim("'")
+        }
+        
+        if ([string]::IsNullOrEmpty($projectType)) {
+            $projectType = "greenfield"
+        }
+    }
+    
     [PSCustomObject]@{
-        REPO_ROOT     = $repoRoot
-        CURRENT_BRANCH = $currentBranch
-        HAS_GIT       = $hasGit
-        FEATURE_DIR   = $featureDir
-        FEATURE_SPEC  = Join-Path $featureDir 'spec.md'
-        IMPL_PLAN     = Join-Path $featureDir 'plan.md'
-        TASKS         = Join-Path $featureDir 'tasks.md'
-        RESEARCH      = Join-Path $featureDir 'research.md'
-        DATA_MODEL    = Join-Path $featureDir 'data-model.md'
-        QUICKSTART    = Join-Path $featureDir 'quickstart.md'
-        CONTRACTS_DIR = Join-Path $featureDir 'contracts'
+        REPO_ROOT           = $repoRoot
+        CURRENT_BRANCH      = $currentBranch
+        HAS_GIT             = $hasGit
+        FEATURE_DIR         = $featureDir
+        FEATURE_SPEC        = Join-Path $featureDir 'spec.md'
+        IMPL_PLAN           = Join-Path $featureDir 'plan.md'
+        TASKS               = Join-Path $featureDir 'tasks.md'
+        RESEARCH            = Join-Path $featureDir 'research.md'
+        DATA_MODEL          = Join-Path $featureDir 'data-model.md'
+        QUICKSTART          = Join-Path $featureDir 'quickstart.md'
+        CONTRACTS_DIR       = Join-Path $featureDir 'contracts'
+        CONTEXT_FILE        = $contextFile
+        PROJECT_TYPE        = $projectType
+        PROJECT_DESCRIPTION = $projectDescription
+        CONTEXT_EXISTS      = $contextExists
+    }
+}
+
+function Get-ProjectContext {
+    $repoRoot = Get-RepoRoot
+    $contextFile = Join-Path $repoRoot ".specify/context.yaml"
+    
+    $projectType = "greenfield"
+    $projectDescription = ""
+    $contextExists = $false
+    
+    if (Test-Path $contextFile) {
+        $contextExists = $true
+        $content = Get-Content $contextFile -Raw
+        
+        if ($content -match '(?m)^project_type:\s*(.+)$') {
+            $projectType = $matches[1].Trim().Trim('"').Trim("'")
+        }
+        if ($content -match '(?m)^description:\s*(.+)$') {
+            $projectDescription = $matches[1].Trim().Trim('"').Trim("'")
+        }
+        
+        if ([string]::IsNullOrEmpty($projectType)) {
+            $projectType = "greenfield"
+        }
+    }
+    
+    [PSCustomObject]@{
+        PROJECT_TYPE        = $projectType
+        PROJECT_DESCRIPTION = $projectDescription
+        CONTEXT_FILE        = $contextFile
+        CONTEXT_EXISTS      = $contextExists
     }
 }
 

@@ -67,12 +67,14 @@ if (-not (Test-FeatureBranch -Branch $paths.CURRENT_BRANCH -HasGit:$paths.HAS_GI
 if ($PathsOnly) {
     if ($Json) {
         [PSCustomObject]@{
-            REPO_ROOT    = $paths.REPO_ROOT
-            BRANCH       = $paths.CURRENT_BRANCH
-            FEATURE_DIR  = $paths.FEATURE_DIR
-            FEATURE_SPEC = $paths.FEATURE_SPEC
-            IMPL_PLAN    = $paths.IMPL_PLAN
-            TASKS        = $paths.TASKS
+            REPO_ROOT           = $paths.REPO_ROOT
+            BRANCH              = $paths.CURRENT_BRANCH
+            FEATURE_DIR         = $paths.FEATURE_DIR
+            FEATURE_SPEC        = $paths.FEATURE_SPEC
+            IMPL_PLAN           = $paths.IMPL_PLAN
+            TASKS               = $paths.TASKS
+            PROJECT_TYPE        = $paths.PROJECT_TYPE
+            PROJECT_DESCRIPTION = $paths.PROJECT_DESCRIPTION
         } | ConvertTo-Json -Compress
     } else {
         Write-Output "REPO_ROOT: $($paths.REPO_ROOT)"
@@ -81,6 +83,8 @@ if ($PathsOnly) {
         Write-Output "FEATURE_SPEC: $($paths.FEATURE_SPEC)"
         Write-Output "IMPL_PLAN: $($paths.IMPL_PLAN)"
         Write-Output "TASKS: $($paths.TASKS)"
+        Write-Output "PROJECT_TYPE: $($paths.PROJECT_TYPE)"
+        Write-Output "PROJECT_DESCRIPTION: $($paths.PROJECT_DESCRIPTION)"
     }
     exit 0
 }
@@ -128,12 +132,15 @@ if ($IncludeTasks -and (Test-Path $paths.TASKS)) {
 if ($Json) {
     # JSON output
     [PSCustomObject]@{ 
-        FEATURE_DIR = $paths.FEATURE_DIR
-        AVAILABLE_DOCS = $docs 
+        FEATURE_DIR         = $paths.FEATURE_DIR
+        AVAILABLE_DOCS      = $docs
+        PROJECT_TYPE        = $paths.PROJECT_TYPE
+        PROJECT_DESCRIPTION = $paths.PROJECT_DESCRIPTION
     } | ConvertTo-Json -Compress
 } else {
     # Text output
     Write-Output "FEATURE_DIR:$($paths.FEATURE_DIR)"
+    Write-Output "PROJECT_TYPE:$($paths.PROJECT_TYPE)"
     Write-Output "AVAILABLE_DOCS:"
     
     # Show status of each potential document

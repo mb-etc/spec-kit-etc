@@ -7,6 +7,72 @@ All notable changes to the Specify CLI and templates are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.25] - 2025-12-31
+
+### Added
+
+- **Greenfield Onboarding Experience**: Enhanced init for new projects
+  - First-run detection prompts for `instructions.md` getting started guide (project-local)
+  - Greenfield projects offered `docs/` scaffolding with architecture, roadmap, and ideas templates
+  - New `templates/instructions.md` with comprehensive Spec-Driven Development walkthrough
+  - New `templates/greenfield/` folder with project scaffolding templates:
+    - `architecture.md` - System design decisions and technology stack
+    - `roadmap.md` - Vision, milestones, and feature backlog
+    - `ideas.md` - Exploratory thinking and brainstorm capture
+
+### Changed
+
+- Init command now detects first-time project setup and offers contextual help
+- Greenfield project selection triggers optional scaffolding prompt
+
+## [0.0.24] - 2025-12-31
+
+### Added
+
+- **Enhanced Project Context Reference**: AI-readable context file for persistent project awareness
+  - Auto-generates `memory/context.md` during init with rich project-type-specific guidance
+  - Context file includes development phase checklists, questions to ask, and red flags
+  - Brownfield/bluefield projects get specialized pre-change checklists and migration considerations
+  - Constraints management via `--add-constraint` and `--remove-constraint` options
+  - Context reference file auto-regenerates when context is updated
+  - Description prompt now shows context-specific hints based on project type
+
+### Changed
+
+- Enhanced `specify context` command:
+  - Added `--add-constraint TEXT` to add project constraints
+  - Added `--remove-constraint INT` to remove constraints by index
+  - `--show` now displays all defined constraints
+  - Context updates increment version and regenerate AI reference file
+- Improved init flow with context-specific description prompt hints
+
+## [0.0.23] - 2025-12-31
+
+### Added
+
+- **Context-Aware Spec Kit**: Project context system for adapted prompting based on project type
+  - New `specify context` command to view and update project context (`--show`, `--set-type`, `--set-description`)
+  - Init command now prompts for project type (greenfield, brownfield, bluefield) and optional description
+  - Creates `.specify/context.yaml` with project metadata during initialization
+  - Scripts output `PROJECT_TYPE` and `PROJECT_DESCRIPTION` in JSON for command consumption
+  - Commands (`specify`, `plan`, `implement`) adapt behavior based on project context:
+    - **Greenfield**: Focus on clean architecture and best practices
+    - **Brownfield**: Additional prompts for backward compatibility, migration, and risk assessment
+    - **Bluefield**: Prompts for platform integration and shared services
+
+- **CodeGuard Security Pack**: Integrated security ruleset for comprehensive security reviews
+  - 22 CodeGuard rules (3 Tier 1 always-apply, 19 Tier 0 context-specific)
+  - Language-aware rule selection based on detected project languages
+  - Domain-specific rules for authentication, API, database, infrastructure, privacy
+  - Updated `review-security` command to use CodeGuard checklists
+  - Security pack included in release packages at `templates/security/`
+
+### Changed
+
+- Enhanced `check-prerequisites.sh` and `check-prerequisites.ps1` to include project context in JSON output
+- Updated `common.sh` and `common.ps1` with `get_project_context` / `Get-ProjectContext` functions
+- Command templates now include context-conditional sections for brownfield/bluefield projects
+
 ## [0.0.22] - 2025-11-07
 
 - Support for VS Code/Copilot agents, and moving away from prompts to proper agents with hand-offs.

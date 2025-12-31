@@ -133,6 +133,13 @@ build_variant() {
   
   [[ -d memory ]] && { cp -r memory "$SPEC_DIR/"; echo "Copied memory -> .specify"; }
   
+  # Copy security pack (CodeGuard rules)
+  if [[ -d templates/security ]]; then
+    mkdir -p "$SPEC_DIR/templates/security"
+    cp -r templates/security/* "$SPEC_DIR/templates/security/"
+    echo "Copied templates/security -> .specify/templates/security"
+  fi
+  
   # Only copy the relevant script variant directory
   if [[ -d scripts ]]; then
     mkdir -p "$SPEC_DIR/scripts"

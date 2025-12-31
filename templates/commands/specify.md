@@ -73,7 +73,37 @@ Given that feature description, do this:
 
 3. Load `templates/spec-template.md` to understand required sections.
 
-4. Follow this execution flow:
+4. **Load Project Context** (if available):
+   
+   Read `.specify/context.yaml` to understand project type. Adapt your approach based on context:
+   
+   **If greenfield** (new project):
+   - Full design freedom - focus on clean, ideal solutions
+   - Minimal constraints to consider
+   - Emphasis on best practices and modern patterns
+   
+   **If brownfield** (existing system):
+   - Ask about existing behavior that must remain unchanged
+   - Include "Backward Compatibility" section in spec
+   - Prompt for known bugs, technical debt, or legacy constraints
+   - Add "Migration Considerations" if data or behavior changes
+   - Consider "Risk Assessment" for changes to production systems
+   - Include questions like:
+     - "What existing functionality must not be affected?"
+     - "Are there known issues or workarounds users rely on?"
+     - "What legacy integrations or APIs must be preserved?"
+   
+   **If bluefield** (existing platform, new components):
+   - Ask about integration points with existing platform
+   - Include "Platform Integration" section in spec
+   - Identify which existing services will be consumed vs newly built
+   - Consider shared resources (auth, logging, config)
+   - Include questions like:
+     - "Which existing platform services will this feature use?"
+     - "What existing APIs or data stores will be accessed?"
+     - "Are there platform-level constraints or standards to follow?"
+
+5. Follow this execution flow:
 
     1. Parse user description from Input
        If empty: ERROR "No feature description provided"

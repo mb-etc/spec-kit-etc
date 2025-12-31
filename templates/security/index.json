@@ -1,0 +1,182 @@
+{
+  "version": "1.0.0",
+  "codeguardVersion": "1.0.1",
+  "framework": "Project CodeGuard",
+  "description": "Language-aware security ruleset for secure-by-default development",
+  "alwaysApply": [
+    "codeguard-1-hardcoded-credentials",
+    "codeguard-1-crypto-algorithms",
+    "codeguard-1-digital-certificates"
+  ],
+  "languageRules": {
+    "typescript": [
+      "codeguard-0-additional-cryptography",
+      "codeguard-0-api-web-services",
+      "codeguard-0-authentication-mfa",
+      "codeguard-0-authorization-access-control",
+      "codeguard-0-client-side-web-security",
+      "codeguard-0-file-handling-and-uploads",
+      "codeguard-0-framework-and-languages",
+      "codeguard-0-input-validation-injection",
+      "codeguard-0-session-management-and-cookies"
+    ],
+    "javascript": [
+      "codeguard-0-additional-cryptography",
+      "codeguard-0-api-web-services",
+      "codeguard-0-authentication-mfa",
+      "codeguard-0-authorization-access-control",
+      "codeguard-0-client-side-web-security",
+      "codeguard-0-cloud-orchestration-kubernetes",
+      "codeguard-0-data-storage",
+      "codeguard-0-devops-ci-cd-containers",
+      "codeguard-0-file-handling-and-uploads",
+      "codeguard-0-framework-and-languages",
+      "codeguard-0-iac-security",
+      "codeguard-0-input-validation-injection",
+      "codeguard-0-logging",
+      "codeguard-0-mobile-apps",
+      "codeguard-0-privacy-data-protection",
+      "codeguard-0-session-management-and-cookies",
+      "codeguard-0-supply-chain-security"
+    ],
+    "python": [
+      "codeguard-0-additional-cryptography",
+      "codeguard-0-api-web-services",
+      "codeguard-0-authentication-mfa",
+      "codeguard-0-authorization-access-control",
+      "codeguard-0-file-handling-and-uploads",
+      "codeguard-0-framework-and-languages",
+      "codeguard-0-input-validation-injection",
+      "codeguard-0-session-management-and-cookies",
+      "codeguard-0-xml-and-serialization"
+    ],
+    "java": [
+      "codeguard-0-additional-cryptography",
+      "codeguard-0-api-web-services",
+      "codeguard-0-authentication-mfa",
+      "codeguard-0-authorization-access-control",
+      "codeguard-0-file-handling-and-uploads",
+      "codeguard-0-framework-and-languages",
+      "codeguard-0-input-validation-injection",
+      "codeguard-0-mobile-apps",
+      "codeguard-0-session-management-and-cookies",
+      "codeguard-0-xml-and-serialization"
+    ],
+    "go": [
+      "codeguard-0-additional-cryptography",
+      "codeguard-0-api-web-services",
+      "codeguard-0-authentication-mfa",
+      "codeguard-0-authorization-access-control",
+      "codeguard-0-file-handling-and-uploads",
+      "codeguard-0-input-validation-injection",
+      "codeguard-0-session-management-and-cookies",
+      "codeguard-0-xml-and-serialization"
+    ],
+    "c": [
+      "codeguard-0-additional-cryptography",
+      "codeguard-0-api-web-services",
+      "codeguard-0-authentication-mfa",
+      "codeguard-0-authorization-access-control",
+      "codeguard-0-client-side-web-security",
+      "codeguard-0-data-storage",
+      "codeguard-0-file-handling-and-uploads",
+      "codeguard-0-framework-and-languages",
+      "codeguard-0-iac-security",
+      "codeguard-0-input-validation-injection",
+      "codeguard-0-logging",
+      "codeguard-0-safe-c-functions",
+      "codeguard-0-session-management-and-cookies",
+      "codeguard-0-xml-and-serialization"
+    ],
+    "cpp": ["codeguard-0-safe-c-functions"],
+    "php": [
+      "codeguard-0-additional-cryptography",
+      "codeguard-0-api-web-services",
+      "codeguard-0-authentication-mfa",
+      "codeguard-0-authorization-access-control",
+      "codeguard-0-client-side-web-security",
+      "codeguard-0-file-handling-and-uploads",
+      "codeguard-0-framework-and-languages",
+      "codeguard-0-input-validation-injection",
+      "codeguard-0-session-management-and-cookies",
+      "codeguard-0-xml-and-serialization"
+    ],
+    "ruby": [
+      "codeguard-0-additional-cryptography",
+      "codeguard-0-api-web-services",
+      "codeguard-0-authentication-mfa",
+      "codeguard-0-authorization-access-control",
+      "codeguard-0-file-handling-and-uploads",
+      "codeguard-0-framework-and-languages",
+      "codeguard-0-iac-security",
+      "codeguard-0-input-validation-injection",
+      "codeguard-0-session-management-and-cookies",
+      "codeguard-0-xml-and-serialization"
+    ],
+    "swift": [
+      "codeguard-0-additional-cryptography",
+      "codeguard-0-authentication-mfa",
+      "codeguard-0-mobile-apps"
+    ],
+    "kotlin": [
+      "codeguard-0-additional-cryptography",
+      "codeguard-0-authentication-mfa",
+      "codeguard-0-framework-and-languages",
+      "codeguard-0-mobile-apps"
+    ],
+    "yaml": [
+      "codeguard-0-additional-cryptography",
+      "codeguard-0-api-web-services",
+      "codeguard-0-authorization-access-control",
+      "codeguard-0-cloud-orchestration-kubernetes",
+      "codeguard-0-data-storage",
+      "codeguard-0-devops-ci-cd-containers",
+      "codeguard-0-framework-and-languages",
+      "codeguard-0-iac-security",
+      "codeguard-0-logging",
+      "codeguard-0-privacy-data-protection",
+      "codeguard-0-supply-chain-security"
+    ],
+    "docker": [
+      "codeguard-0-devops-ci-cd-containers",
+      "codeguard-0-supply-chain-security"
+    ],
+    "sql": [
+      "codeguard-0-data-storage",
+      "codeguard-0-input-validation-injection"
+    ],
+    "shell": [
+      "codeguard-0-devops-ci-cd-containers",
+      "codeguard-0-iac-security",
+      "codeguard-0-input-validation-injection"
+    ],
+    "powershell": [
+      "codeguard-0-devops-ci-cd-containers",
+      "codeguard-0-iac-security",
+      "codeguard-0-input-validation-injection"
+    ]
+  },
+  "domainRules": {
+    "authentication": [
+      "codeguard-0-authentication-mfa",
+      "codeguard-0-session-management-and-cookies"
+    ],
+    "authorization": ["codeguard-0-authorization-access-control"],
+    "api": ["codeguard-0-api-web-services"],
+    "database": ["codeguard-0-data-storage", "codeguard-0-input-validation-injection"],
+    "cryptography": [
+      "codeguard-0-additional-cryptography",
+      "codeguard-1-crypto-algorithms",
+      "codeguard-1-digital-certificates"
+    ],
+    "file-upload": ["codeguard-0-file-handling-and-uploads"],
+    "web-frontend": ["codeguard-0-client-side-web-security"],
+    "mobile": ["codeguard-0-mobile-apps"],
+    "infrastructure": [
+      "codeguard-0-cloud-orchestration-kubernetes",
+      "codeguard-0-devops-ci-cd-containers",
+      "codeguard-0-iac-security"
+    ],
+    "privacy": ["codeguard-0-privacy-data-protection", "codeguard-0-logging"]
+  }
+}

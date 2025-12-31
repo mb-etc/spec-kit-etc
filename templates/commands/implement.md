@@ -15,9 +15,31 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Outline
 
-1. Run `{SCRIPT}` from repo root and parse FEATURE_DIR and AVAILABLE_DOCS list. All paths must be absolute. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
+1. Run `{SCRIPT}` from repo root and parse FEATURE_DIR, AVAILABLE_DOCS list, and PROJECT_TYPE. All paths must be absolute. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
 
-2. **Check checklists status** (if FEATURE_DIR/checklists/ exists):
+2. **Apply Project Context** based on PROJECT_TYPE:
+   
+   **If greenfield**:
+   - Standard implementation flow
+   - Focus on clean code and best practices
+   
+   **If brownfield**:
+   - **Before implementing each task**, verify no existing functionality is affected
+   - Use feature flags if adding new behavior that may conflict
+   - Create backup/rollback points at phase boundaries
+   - Run existing tests before AND after each major change
+   - Document any changes to existing APIs or data structures
+   - Consider database migration safety (reversible migrations preferred)
+   - Watch for breaking changes to existing integrations
+   
+   **If bluefield**:
+   - Verify integration with existing platform services before proceeding
+   - Follow existing platform patterns and conventions
+   - Use existing authentication/authorization mechanisms
+   - Leverage shared platform services (logging, config, etc.)
+   - Test against platform staging environment if available
+
+3. **Check checklists status** (if FEATURE_DIR/checklists/ exists):
    - Scan all checklist files in the checklists/ directory
    - For each checklist, count:
      - Total items: All lines matching `- [ ]` or `- [X]` or `- [x]`
@@ -42,13 +64,13 @@ You **MUST** consider the user input before proceeding (if not empty).
      - **STOP** and ask: "Some checklists are incomplete. Do you want to proceed with implementation anyway? (yes/no)"
      - Wait for user response before continuing
      - If user says "no" or "wait" or "stop", halt execution
-     - If user says "yes" or "proceed" or "continue", proceed to step 3
+     - If user says "yes" or "proceed" or "continue", proceed to step 4
 
    - **If all checklists are complete**:
      - Display the table showing all checklists passed
-     - Automatically proceed to step 3
+     - Automatically proceed to step 4
 
-3. Load and analyze the implementation context:
+4. Load and analyze the implementation context:
    - **REQUIRED**: Read tasks.md for the complete task list and execution plan
    - **REQUIRED**: Read plan.md for tech stack, architecture, and file structure
    - **IF EXISTS**: Read data-model.md for entities and relationships
@@ -56,7 +78,7 @@ You **MUST** consider the user input before proceeding (if not empty).
    - **IF EXISTS**: Read research.md for technical decisions and constraints
    - **IF EXISTS**: Read quickstart.md for integration scenarios
 
-4. **Project Setup Verification**:
+5. **Project Setup Verification**:
    - **REQUIRED**: Create/verify ignore files based on actual project setup:
 
    **Detection & Creation Logic**:
@@ -100,20 +122,20 @@ You **MUST** consider the user input before proceeding (if not empty).
    - **Terraform**: `.terraform/`, `*.tfstate*`, `*.tfvars`, `.terraform.lock.hcl`
    - **Kubernetes/k8s**: `*.secret.yaml`, `secrets/`, `.kube/`, `kubeconfig*`, `*.key`, `*.crt`
 
-5. Parse tasks.md structure and extract:
+6. Parse tasks.md structure and extract:
    - **Task phases**: Setup, Tests, Core, Integration, Polish
    - **Task dependencies**: Sequential vs parallel execution rules
    - **Task details**: ID, description, file paths, parallel markers [P]
    - **Execution flow**: Order and dependency requirements
 
-6. Execute implementation following the task plan:
+7. Execute implementation following the task plan:
    - **Phase-by-phase execution**: Complete each phase before moving to the next
    - **Respect dependencies**: Run sequential tasks in order, parallel tasks [P] can run together  
    - **Follow TDD approach**: Execute test tasks before their corresponding implementation tasks
    - **File-based coordination**: Tasks affecting the same files must run sequentially
    - **Validation checkpoints**: Verify each phase completion before proceeding
 
-7. Implementation execution rules:
+8. Implementation execution rules:
    - **Setup first**: Initialize project structure, dependencies, configuration
    - **Tests before code**: If you need to write tests for contracts, entities, and integration scenarios
    - **Core development**: Implement models, services, CLI commands, endpoints

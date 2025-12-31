@@ -26,11 +26,31 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Outline
 
-1. **Setup**: Run `{SCRIPT}` from repo root and parse JSON for FEATURE_SPEC, IMPL_PLAN, SPECS_DIR, BRANCH. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
+1. **Setup**: Run `{SCRIPT}` from repo root and parse JSON for FEATURE_SPEC, IMPL_PLAN, SPECS_DIR, BRANCH, PROJECT_TYPE. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
 
 2. **Load context**: Read FEATURE_SPEC and `/memory/constitution.md`. Load IMPL_PLAN template (already copied).
 
-3. **Execute plan workflow**: Follow the structure in IMPL_PLAN template to:
+3. **Apply Project Context** based on PROJECT_TYPE:
+   
+   **If greenfield**:
+   - Focus on clean architecture and best practices
+   - Minimal legacy considerations
+   
+   **If brownfield**:
+   - Include "Migration Strategy" section in plan
+   - Document rollback procedures for each phase
+   - Identify affected existing components
+   - Plan for backward compatibility testing
+   - Consider feature flags for gradual rollout
+   - Research existing code patterns to maintain consistency
+   
+   **If bluefield**:
+   - Document integration touchpoints with existing platform
+   - Identify shared services to leverage vs build new
+   - Plan for platform compatibility testing
+   - Consider existing authentication/authorization patterns
+
+4. **Execute plan workflow**: Follow the structure in IMPL_PLAN template to:
    - Fill Technical Context (mark unknowns as "NEEDS CLARIFICATION")
    - Fill Constitution Check section from constitution
    - Evaluate gates (ERROR if violations unjustified)
@@ -39,7 +59,7 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Phase 1: Update agent context by running the agent script
    - Re-evaluate Constitution Check post-design
 
-4. **Stop and report**: Command ends after Phase 2 planning. Report branch, IMPL_PLAN path, and generated artifacts.
+5. **Stop and report**: Command ends after Phase 2 planning. Report branch, IMPL_PLAN path, and generated artifacts.
 
 ## Phases
 

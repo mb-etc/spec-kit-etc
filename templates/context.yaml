@@ -1,0 +1,41 @@
+# Spec Kit Project Context
+# This file defines the project context for spec-driven development.
+# Context helps AI assistants provide more accurate, realistic specs.
+
+# Project type determines prompting and validation behavior:
+#   greenfield - New project with full design freedom
+#   brownfield - Existing system with legacy constraints
+#   bluefield  - Existing platform with new components
+project_type: greenfield
+
+# Brief description of the project or system
+description: ""
+
+# Known constraints that must be respected
+# Examples:
+#   - Must not change existing APIs
+#   - Data model changes require migration
+#   - Must maintain backward compatibility with v2.x clients
+constraints: []
+
+# Links to external artifacts for context (optional)
+# These help AI assistants understand existing documentation
+linked_artifacts:
+  # Issue tracker references
+  # jira:
+  #   - PROJECT-1234
+  #   - PROJECT-5678
+  
+  # Documentation links
+  # confluence:
+  #   - Architecture Overview
+  #   - API Design Guidelines
+  
+  # Local documentation paths
+  # docs:
+  #   - docs/architecture.md
+  #   - docs/known-issues.md
+
+# Metadata (auto-populated by Spec Kit)
+created: ""
+updated: ""

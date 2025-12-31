@@ -86,8 +86,8 @@ check_feature_branch "$CURRENT_BRANCH" "$HAS_GIT" || exit 1
 if $PATHS_ONLY; then
     if $JSON_MODE; then
         # Minimal JSON paths payload (no validation performed)
-        printf '{"REPO_ROOT":"%s","BRANCH":"%s","FEATURE_DIR":"%s","FEATURE_SPEC":"%s","IMPL_PLAN":"%s","TASKS":"%s"}\n' \
-            "$REPO_ROOT" "$CURRENT_BRANCH" "$FEATURE_DIR" "$FEATURE_SPEC" "$IMPL_PLAN" "$TASKS"
+        printf '{"REPO_ROOT":"%s","BRANCH":"%s","FEATURE_DIR":"%s","FEATURE_SPEC":"%s","IMPL_PLAN":"%s","TASKS":"%s","PROJECT_TYPE":"%s","PROJECT_DESCRIPTION":"%s"}\n' \
+            "$REPO_ROOT" "$CURRENT_BRANCH" "$FEATURE_DIR" "$FEATURE_SPEC" "$IMPL_PLAN" "$TASKS" "$PROJECT_TYPE" "$PROJECT_DESCRIPTION"
     else
         echo "REPO_ROOT: $REPO_ROOT"
         echo "BRANCH: $CURRENT_BRANCH"
@@ -95,6 +95,8 @@ if $PATHS_ONLY; then
         echo "FEATURE_SPEC: $FEATURE_SPEC"
         echo "IMPL_PLAN: $IMPL_PLAN"
         echo "TASKS: $TASKS"
+        echo "PROJECT_TYPE: $PROJECT_TYPE"
+        echo "PROJECT_DESCRIPTION: $PROJECT_DESCRIPTION"
     fi
     exit 0
 fi
@@ -148,10 +150,12 @@ if $JSON_MODE; then
         json_docs="[${json_docs%,}]"
     fi
     
-    printf '{"FEATURE_DIR":"%s","AVAILABLE_DOCS":%s}\n' "$FEATURE_DIR" "$json_docs"
+    printf '{"FEATURE_DIR":"%s","AVAILABLE_DOCS":%s,"PROJECT_TYPE":"%s","PROJECT_DESCRIPTION":"%s"}\n' \
+        "$FEATURE_DIR" "$json_docs" "$PROJECT_TYPE" "$PROJECT_DESCRIPTION"
 else
     # Text output
     echo "FEATURE_DIR:$FEATURE_DIR"
+    echo "PROJECT_TYPE:$PROJECT_TYPE"
     echo "AVAILABLE_DOCS:"
     
     # Show status of each potential document

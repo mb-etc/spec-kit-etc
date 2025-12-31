@@ -135,6 +135,20 @@ get_feature_paths() {
 
     # Use prefix-based lookup to support multiple branches per spec
     local feature_dir=$(find_feature_dir_by_prefix "$repo_root" "$current_branch")
+    
+    # Get project context
+    local context_file="$repo_root/.specify/context.yaml"
+    local project_type="greenfield"
+    local project_description=""
+    
+    if [[ -f "$context_file" ]]; then
+        # Simple YAML parsing for known keys
+        project_type=$(grep -E "^project_type:" "$context_file" 2>/dev/null | sed 's/^project_type:[[:space:]]*//' | tr -d '"' | tr -d "'")
+        project_description=$(grep -E "^description:" "$context_file" 2>/dev/null | sed 's/^description:[[:space:]]*//' | tr -d '"' | tr -d "'")
+        
+        # Default to greenfield if empty
+        [[ -z "$project_type" ]] && project_type="greenfield"
+    fi
 
     cat <<EOF
 REPO_ROOT='$repo_root'
@@ -148,6 +162,34 @@ RESEARCH='$feature_dir/research.md'
 DATA_MODEL='$feature_dir/data-model.md'
 QUICKSTART='$feature_dir/quickstart.md'
 CONTRACTS_DIR='$feature_dir/contracts'
+CONTEXT_FILE='$context_file'
+PROJECT_TYPE='$project_type'
+PROJECT_DESCRIPTION='$project_description'
+EOF
+}
+
+# Get project context as standalone function
+get_project_context() {
+    local repo_root=$(get_repo_root)
+    local context_file="$repo_root/.specify/context.yaml"
+    
+    local project_type="greenfield"
+    local project_description=""
+    local constraints=""
+    
+    if [[ -f "$context_file" ]]; then
+        project_type=$(grep -E "^project_type:" "$context_file" 2>/dev/null | sed 's/^project_type:[[:space:]]*//' | tr -d '"' | tr -d "'")
+        project_description=$(grep -E "^description:" "$context_file" 2>/dev/null | sed 's/^description:[[:space:]]*//' | tr -d '"' | tr -d "'")
+        
+        # Default to greenfield if empty
+        [[ -z "$project_type" ]] && project_type="greenfield"
+    fi
+    
+    cat <<EOF
+PROJECT_TYPE='$project_type'
+PROJECT_DESCRIPTION='$project_description'
+CONTEXT_FILE='$context_file'
+CONTEXT_EXISTS='$([[ -f "$context_file" ]] && echo "true" || echo "false")'
 EOF
 }
 

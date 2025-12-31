@@ -230,6 +230,572 @@ AGENT_CONFIG = {
 
 SCRIPT_TYPE_CHOICES = {"sh": "POSIX Shell (bash/zsh)", "ps": "PowerShell"}
 
+PROJECT_TYPE_CHOICES = {
+    "greenfield": "New project - full design freedom",
+    "brownfield": "Existing system - legacy constraints apply",
+    "bluefield": "Existing platform - adding new components",
+}
+
+# Project type descriptions for AI reference file
+PROJECT_TYPE_DESCRIPTIONS = {
+    "greenfield": (
+        "This is a **new project** with no existing codebase. You have full design freedom "
+        "and can establish patterns, architecture, and conventions from scratch."
+    ),
+    "brownfield": (
+        "This is an **existing system** with active users and legacy code. Changes must "
+        "consider backward compatibility, existing behavior, and migration paths. "
+        "Regressions are a primary risk."
+    ),
+    "bluefield": (
+        "This is a **hybrid project**—new components being added to an existing platform. "
+        "New code should be isolated where possible, but must integrate with existing "
+        "services and respect platform conventions."
+    ),
+}
+
+# Development implications by project type
+PROJECT_TYPE_IMPLICATIONS = {
+    "greenfield": """
+### When Specifying Features
+- Focus on clean architecture and best practices
+- Establish patterns that will scale
+- No legacy compatibility concerns
+
+### When Planning Implementation
+- Choose optimal technical approaches freely
+- Set up proper testing infrastructure from the start
+- Establish coding standards and conventions
+
+### When Implementing
+- Write clean, well-documented code
+- Build comprehensive test coverage
+- Create proper abstractions from day one
+""",
+    "brownfield": """
+### When Specifying Features
+- **ALWAYS ASK**: What existing behavior must remain unchanged?
+- **ALWAYS ASK**: Are there known bugs or quirks users depend on?
+- **ALWAYS ASK**: What technical debt affects this area?
+- Include backward compatibility requirements in acceptance criteria
+- Document migration/rollback considerations
+
+### When Planning Implementation
+- Identify all touchpoints with existing code
+- Plan for feature flags to enable gradual rollout
+- Include rollback procedures for each major change
+- Consider database migration strategies
+
+### When Implementing
+- Implement behind **feature flags** when touching existing behavior
+- Add **regression tests** before modifying existing code
+- Document **breaking changes** prominently
+- Preserve existing APIs unless explicitly changing them
+- Test with production-like data
+
+### When Reviewing
+- Verify backward compatibility
+- Check for unintended side effects
+- Validate migration scripts
+- Confirm rollback procedures work
+""",
+    "bluefield": """
+### When Specifying Features
+- **ALWAYS ASK**: Which components are new vs existing?
+- **ALWAYS ASK**: What shared services will this integrate with?
+- **ALWAYS ASK**: What platform standards must be followed?
+- Define clear integration boundaries
+- Document dependencies on existing services
+
+### When Planning Implementation
+- Use adapter patterns to isolate new code from legacy
+- Plan integration testing with existing services
+- Identify shared dependencies and versioning concerns
+- Consider deployment coordination with existing components
+
+### When Implementing
+- Respect existing platform conventions
+- Use dependency injection for existing service integration
+- Write contract tests for integration points
+- Keep new components loosely coupled
+- Test boundary conditions between new and existing
+
+### When Reviewing
+- Verify integration contracts are honored
+- Check isolation boundaries are maintained
+- Validate platform standards compliance
+""",
+}
+
+# Context-specific guidance and checklists
+CONTEXT_GUIDANCE = {
+    "greenfield": """
+### Questions to Consider
+- What patterns will best serve this project long-term?
+- What testing strategy fits the project scope?
+- What conventions should be established now?
+
+### Red Flags to Watch For
+- Over-engineering for hypothetical future needs
+- Skipping tests "because it's new code"
+- Inconsistent patterns across components
+""",
+    "brownfield": """
+### Questions to Always Ask
+1. What existing behavior depends on this code?
+2. Who are the current users and how do they use it?
+3. What would break if this change goes wrong?
+4. How do we rollback if needed?
+5. Is there technical debt we should address or avoid?
+
+### Red Flags to Watch For
+- Changes without regression tests
+- Assumptions about "unused" code
+- Breaking API changes without migration paths
+- Skipping feature flags for risky changes
+- "Big bang" releases instead of incremental rollout
+
+### Before Every Change
+- [ ] Identified all callers/consumers of modified code
+- [ ] Added regression tests for existing behavior
+- [ ] Documented rollback procedure
+- [ ] Considered feature flag for gradual rollout
+""",
+    "bluefield": """
+### Questions to Always Ask
+1. Is this component truly new, or does it touch existing code?
+2. What existing services does this integrate with?
+3. Are there platform standards that apply?
+4. How will this be deployed alongside existing components?
+
+### Red Flags to Watch For
+- Tight coupling between new and existing components
+- Ignoring platform conventions "because it's new"
+- Missing contract tests for integrations
+- Deployment plans that don't consider existing services
+
+### Before Every Integration
+- [ ] Contract tests written for integration points
+- [ ] Adapter pattern used for legacy integration
+- [ ] Deployment coordination planned
+- [ ] Rollback won't affect existing components
+""",
+}
+
+# Description prompt hints by project type
+DESCRIPTION_HINTS = {
+    "greenfield": (
+        "[dim]Examples:[/dim]\n"
+        "  • E-commerce platform with React frontend and Node.js API\n"
+        "  • Mobile app for fitness tracking with cloud sync\n"
+        "  • Internal tool for managing customer support tickets"
+    ),
+    "brownfield": (
+        "[dim]Examples:[/dim]\n"
+        "  • Legacy billing system migrating from monolith to microservices\n"
+        "  • Adding new features to 10-year-old Java ERP system\n"
+        "  • Modernizing PHP application with React components\n"
+        "\n"
+        "[dim]Consider mentioning:[/dim]\n"
+        "  • Key integrations (SAP, Salesforce, legacy databases)\n"
+        "  • Known constraints (APIs that can't change, frozen schemas)\n"
+        "  • Technical debt areas"
+    ),
+    "bluefield": (
+        "[dim]Examples:[/dim]\n"
+        "  • New analytics module for existing SaaS platform\n"
+        "  • Adding mobile app to existing web application\n"
+        "  • Building new microservice within existing Kubernetes cluster\n"
+        "\n"
+        "[dim]Consider mentioning:[/dim]\n"
+        "  • Which parts are new vs existing\n"
+        "  • Shared services you'll integrate with\n"
+        "  • Platform constraints or standards"
+    ),
+}
+
+# Template for AI-readable context reference file
+CONTEXT_REFERENCE_TEMPLATE = '''# Project Context
+
+> **This file is auto-generated by Spec Kit.** It provides AI agents with persistent
+> project context. Do not edit manually—use `specify context` to update.
+
+## Project Type: {project_type_upper}
+
+{project_type_description}
+
+## Description
+
+{description}
+
+---
+
+## What This Means for Development
+
+{development_implications}
+
+---
+
+## Constraints
+
+{constraints_section}
+
+---
+
+## Linked Artifacts
+
+{artifacts_section}
+
+---
+
+## Context-Specific Guidance
+
+{guidance_section}
+
+---
+
+*Last updated: {timestamp}*
+*Context version: {version}*
+'''
+
+# Greenfield scaffolding templates
+INSTRUCTIONS_TEMPLATE = '''# Getting Started with Spec Kit
+
+Welcome to Spec-Driven Development (SDD)! This guide will help you understand the workflow and get your project off the ground.
+
+## What is Spec-Driven Development?
+
+SDD is a methodology that emphasizes creating clear specifications *before* implementation. Instead of jumping straight into code, you:
+
+1. **Define** what you're building in plain language
+2. **Specify** the details with AI assistance
+3. **Plan** the implementation approach
+4. **Implement** with clear guidance
+5. **Review** against the original spec
+
+## The Spec Kit Workflow
+
+### Step 1: Establish Your Constitution
+
+Start by running the `/speckit.constitution` command. This creates your project's guiding principles in `memory/constitution.md`.
+
+The constitution helps AI assistants understand:
+- Your project's purpose and goals
+- Technical preferences and constraints
+- Coding standards and patterns
+- What "done" looks like for your project
+
+### Step 2: Specify Features
+
+When you have a feature idea, run `/speckit.specify` with a description:
+
+```
+/speckit.specify Add user authentication with OAuth2 support
+```
+
+This creates a detailed specification in `specs/features/`.
+
+### Step 3: Plan Implementation
+
+Once a spec is approved, run `/speckit.plan` to create an implementation plan:
+
+```
+/speckit.plan specs/features/SPEC-001-user-authentication.md
+```
+
+### Step 4: Generate Tasks
+
+Use `/speckit.tasks` to break the plan into discrete tasks:
+
+```
+/speckit.tasks specs/plans/PLAN-001-user-authentication.md
+```
+
+### Step 5: Implement
+
+Run `/speckit.implement` on individual tasks:
+
+```
+/speckit.implement specs/tasks/TASK-001-setup-oauth-provider.md
+```
+
+## Project Structure
+
+```
+your-project/
+├── .specify/           # Spec Kit configuration
+│   └── context.yaml    # Project context metadata
+├── memory/             # Persistent AI context
+│   ├── constitution.md # Project principles
+│   └── context.md      # Auto-generated context reference
+├── specs/              # All specifications
+│   ├── features/       # Feature specifications
+│   ├── plans/          # Implementation plans
+│   └── tasks/          # Individual tasks
+└── docs/               # Project documentation (optional)
+    ├── architecture.md # System design decisions
+    ├── roadmap.md      # Vision and milestones
+    └── ideas.md        # Exploratory thinking
+```
+
+## Tips for Success
+
+1. **Be specific in your prompts** - The more context you provide, the better the specs
+2. **Review and refine specs** - Use `/speckit.clarify` to iterate on unclear areas
+3. **Keep your constitution updated** - As your project evolves, so should your principles
+4. **Link related specs** - Reference other specs to maintain consistency
+
+## Next Steps
+
+1. Run `/speckit.constitution` to establish your project principles
+2. Describe your first feature and run `/speckit.specify`
+3. Iterate on the spec until it captures your intent
+4. Plan and implement!
+
+## Need Help?
+
+- Check the [Spec Kit documentation](https://github.com/github/spec-kit)
+- Review example specs in the `specs/` folder
+- Ask your AI assistant to explain any command
+'''
+
+ARCHITECTURE_TEMPLATE = '''# Architecture Decisions
+
+> This document captures key architectural decisions for the project. Update it as your understanding evolves.
+
+## Overview
+
+<!-- High-level description of the system architecture -->
+
+_Describe the overall system design, major components, and how they interact._
+
+## System Diagram
+
+<!-- ASCII diagram, Mermaid, or link to visual diagram -->
+
+```
+┌─────────────────┐     ┌─────────────────┐
+│                 │     │                 │
+│   Component A   │────▶│   Component B   │
+│                 │     │                 │
+└─────────────────┘     └─────────────────┘
+         │
+         ▼
+┌─────────────────┐
+│                 │
+│   Component C   │
+│                 │
+└─────────────────┘
+```
+
+## Key Architectural Decisions
+
+| # | Decision | Options Considered | Choice | Rationale |
+|---|----------|-------------------|--------|----------|
+| 1 | _e.g., Database_ | PostgreSQL, MongoDB, SQLite | _TBD_ | _Why this choice_ |
+| 2 | _e.g., API Style_ | REST, GraphQL, gRPC | _TBD_ | _Why this choice_ |
+| 3 | _e.g., Hosting_ | AWS, Azure, GCP, Self-hosted | _TBD_ | _Why this choice_ |
+
+## Technology Stack
+
+### Languages & Frameworks
+
+| Layer | Technology | Version | Notes |
+|-------|------------|---------|-------|
+| Backend | _e.g., Python/FastAPI_ | | |
+| Frontend | _e.g., React/TypeScript_ | | |
+| Database | _e.g., PostgreSQL_ | | |
+
+### Infrastructure
+
+| Component | Technology | Notes |
+|-----------|------------|-------|
+| Hosting | | |
+| CI/CD | | |
+| Monitoring | | |
+
+## Design Principles
+
+<!-- Guiding principles for architectural decisions -->
+
+1. **_Principle 1_** - _Description_
+2. **_Principle 2_** - _Description_
+3. **_Principle 3_** - _Description_
+
+## Constraints
+
+<!-- Known constraints that affect architecture -->
+
+- _e.g., Must run in air-gapped environment_
+- _e.g., Budget limited to $X/month for infrastructure_
+- _e.g., Team has limited experience with X technology_
+
+## Open Questions
+
+<!-- Architectural decisions still to be made -->
+
+- [ ] _Question 1_
+- [ ] _Question 2_
+
+---
+
+*Last updated: <!-- date -->*
+'''
+
+ROADMAP_TEMPLATE = '''# Project Roadmap
+
+> This document captures the project vision, milestones, and feature backlog.
+
+## Vision
+
+<!-- What does success look like? What problem are you solving? -->
+
+_Describe the end goal of this project and the value it provides._
+
+## Target Users
+
+<!-- Who is this for? -->
+
+| User Type | Description | Key Needs |
+|-----------|-------------|----------|
+| _Primary_ | | |
+| _Secondary_ | | |
+
+## Milestones
+
+### M0: Foundation _(Current)_
+
+**Goal:** _Establish project structure and core architecture_
+
+- [ ] Project scaffolding complete
+- [ ] Architecture decisions documented
+- [ ] Development environment setup
+- [ ] CI/CD pipeline configured
+
+**Target Date:** _TBD_
+
+### M1: MVP
+
+**Goal:** _Minimum viable product with core functionality_
+
+- [ ] _Core feature 1_
+- [ ] _Core feature 2_
+- [ ] _Core feature 3_
+- [ ] Basic documentation
+
+**Target Date:** _TBD_
+
+### M2: Beta
+
+**Goal:** _Feature-complete for initial users_
+
+- [ ] _Additional feature 1_
+- [ ] _Additional feature 2_
+- [ ] User feedback integration
+- [ ] Performance optimization
+
+**Target Date:** _TBD_
+
+### M3: Launch
+
+**Goal:** _Production-ready release_
+
+- [ ] Security audit complete
+- [ ] Documentation complete
+- [ ] Deployment automation
+- [ ] Monitoring and alerting
+
+**Target Date:** _TBD_
+
+## Feature Backlog
+
+<!-- Features to consider for future milestones -->
+
+| Priority | Feature | Description | Milestone |
+|----------|---------|-------------|-----------|
+| High | | | |
+| Medium | | | |
+| Low | | | |
+
+## Non-Goals
+
+<!-- What this project is NOT trying to do -->
+
+- _Explicitly out of scope item 1_
+- _Explicitly out of scope item 2_
+
+## Success Metrics
+
+<!-- How will you measure success? -->
+
+| Metric | Target | How Measured |
+|--------|--------|-------------|
+| | | |
+
+---
+
+*Last updated: <!-- date -->*
+'''
+
+IDEAS_TEMPLATE = '''# Ideas & Exploration
+
+> A space for capturing exploratory thinking, brainstorms, and ideas that aren't ready for formal specification.
+
+## Active Explorations
+
+<!-- Ideas currently being explored or researched -->
+
+### _Idea Title_
+
+**Status:** Exploring | Researching | Ready to Spec | Parked
+
+**Description:**
+_What is this idea about?_
+
+**Questions to Answer:**
+- _Question 1_
+- _Question 2_
+
+**Notes:**
+_Research findings, sketches, links_
+
+---
+
+## Idea Backlog
+
+<!-- Quick capture of ideas for later consideration -->
+
+| Idea | Category | Priority | Notes |
+|------|----------|----------|-------|
+| | | | |
+
+## Parked Ideas
+
+<!-- Ideas intentionally set aside (not rejected, just not now) -->
+
+| Idea | Reason Parked | Revisit When |
+|------|---------------|--------------|
+| | | |
+
+## Rejected Ideas
+
+<!-- Ideas considered but decided against (for reference) -->
+
+| Idea | Reason Rejected | Date |
+|------|-----------------|------|
+| | | |
+
+## Inspiration & References
+
+<!-- Links, articles, examples that inspire the project -->
+
+- _Link or reference_
+
+---
+
+*Last updated: <!-- date -->*
+'''
+
 CLAUDE_LOCAL_PATH = Path.home() / ".claude" / "local" / "claude"
 
 BANNER = """
@@ -942,6 +1508,169 @@ def ensure_executable_scripts(project_path: Path, tracker: StepTracker | None = 
             for f in failures:
                 console.print(f"  - {f}")
 
+
+def create_greenfield_scaffolding(project_path: Path, tracker: StepTracker | None = None) -> None:
+    """Create docs/ folder with greenfield scaffolding templates."""
+    docs_dir = project_path / "docs"
+    docs_dir.mkdir(parents=True, exist_ok=True)
+    
+    scaffolding_files = {
+        "architecture.md": ARCHITECTURE_TEMPLATE,
+        "roadmap.md": ROADMAP_TEMPLATE,
+        "ideas.md": IDEAS_TEMPLATE,
+    }
+    
+    for filename, content in scaffolding_files.items():
+        dest = docs_dir / filename
+        if not dest.exists():
+            dest.write_text(content)
+    
+    if tracker:
+        tracker.add("scaffolding", "Create greenfield scaffolding")
+        tracker.complete("scaffolding", "docs/")
+
+
+def create_instructions_file(project_path: Path, tracker: StepTracker | None = None) -> None:
+    """Create instructions.md in project root."""
+    dest = project_path / "instructions.md"
+    
+    if not dest.exists():
+        dest.write_text(INSTRUCTIONS_TEMPLATE)
+    
+    if tracker:
+        tracker.add("instructions", "Create instructions.md")
+        tracker.complete("instructions", "created")
+
+
+def generate_context_reference(
+    project_path: Path,
+    project_type: str,
+    description: str,
+    constraints: list,
+    linked_artifacts: dict,
+    timestamp: str,
+    version: int = 1
+) -> None:
+    """Generate memory/context.md for AI agent reference."""
+    memory_dir = project_path / "memory"
+    memory_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Format constraints section
+    if constraints:
+        constraints_section = "\n".join(f"- {c}" for c in constraints)
+    else:
+        constraints_section = "_No constraints defined. Add via `specify context --add-constraint`._"
+    
+    # Format artifacts section
+    artifacts_lines = []
+    for category, items in (linked_artifacts or {}).items():
+        if items:
+            artifacts_lines.append(f"### {category.title()}")
+            for item in items:
+                artifacts_lines.append(f"- {item}")
+    artifacts_section = "\n".join(artifacts_lines) if artifacts_lines else "_No linked artifacts. Edit `.specify/context.yaml` to add._"
+    
+    content = CONTEXT_REFERENCE_TEMPLATE.format(
+        project_type_upper=project_type.upper(),
+        project_type_description=PROJECT_TYPE_DESCRIPTIONS.get(project_type, "Unknown project type."),
+        description=description if description else "_No description provided._",
+        development_implications=PROJECT_TYPE_IMPLICATIONS.get(project_type, ""),
+        constraints_section=constraints_section,
+        artifacts_section=artifacts_section,
+        guidance_section=CONTEXT_GUIDANCE.get(project_type, ""),
+        timestamp=timestamp,
+        version=version,
+    )
+    
+    context_md = memory_dir / "context.md"
+    context_md.write_text(content)
+
+
+def create_project_context(project_path: Path, project_type: str, description: str = "", tracker: StepTracker | None = None) -> None:
+    """Create .specify/context.yaml and memory/context.md with project context metadata."""
+    context_dir = project_path / ".specify"
+    context_dir.mkdir(parents=True, exist_ok=True)
+    context_file = context_dir / "context.yaml"
+    
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    
+    # Escape description for YAML (handle multiline)
+    if description:
+        # Indent multiline descriptions properly
+        if "\n" in description:
+            desc_lines = description.split("\n")
+            description_yaml = "|\n" + "\n".join(f"  {line}" for line in desc_lines)
+        else:
+            # Single line - quote if contains special characters
+            if any(c in description for c in ":#{}[]&*!|>'\"%@`"):
+                description_yaml = f'"{description}"'
+            else:
+                description_yaml = description
+    else:
+        description_yaml = '""'
+    
+    context_content = f"""# Spec Kit Project Context
+# This file defines the project context for spec-driven development.
+# Context helps AI assistants provide more accurate, realistic specs.
+
+# Project type determines prompting and validation behavior:
+#   greenfield - New project with full design freedom
+#   brownfield - Existing system with legacy constraints
+#   bluefield  - Existing platform with new components
+project_type: {project_type}
+
+# Brief description of the project or system
+description: {description_yaml}
+
+# Known constraints that must be respected
+# Examples:
+#   - Must not change existing APIs
+#   - Data model changes require migration
+#   - Must maintain backward compatibility with v2.x clients
+constraints: []
+
+# Links to external artifacts for context (optional)
+# These help AI assistants understand existing documentation
+linked_artifacts:
+  # Issue tracker references
+  # jira:
+  #   - PROJECT-1234
+  #   - PROJECT-5678
+  
+  # Documentation links
+  # confluence:
+  #   - Architecture Overview
+  #   - API Design Guidelines
+  
+  # Local documentation paths
+  # docs:
+  #   - docs/architecture.md
+  #   - docs/known-issues.md
+
+# Metadata (auto-populated by Spec Kit)
+created: {now}
+updated: {now}
+version: 1
+"""
+    
+    context_file.write_text(context_content)
+    
+    # Generate AI-readable reference file
+    generate_context_reference(
+        project_path=project_path,
+        project_type=project_type,
+        description=description,
+        constraints=[],
+        linked_artifacts={},
+        timestamp=now,
+        version=1
+    )
+    
+    if tracker:
+        tracker.add("context", "Create project context")
+        tracker.complete("context", project_type)
+
+
 @app.command()
 def init(
     project_name: str = typer.Argument(None, help="Name for your new project directory (optional if using --here, or use '.' for current directory)"),
@@ -1088,8 +1817,56 @@ def init(
         else:
             selected_script = default_script
 
+    # Project context selection
+    if sys.stdin.isatty():
+        selected_project_type = select_with_arrows(
+            PROJECT_TYPE_CHOICES, 
+            "What type of project is this?", 
+            "greenfield"
+        )
+        
+        # Show context-specific description hints
+        console.print()
+        if selected_project_type in DESCRIPTION_HINTS:
+            console.print(f"[dim]{DESCRIPTION_HINTS[selected_project_type]}[/dim]")
+        
+        # Optional description prompt
+        project_description = typer.prompt(
+            "Brief project description (optional, press Enter to skip)",
+            default="",
+            show_default=False
+        )
+    else:
+        selected_project_type = "greenfield"
+        project_description = ""
+
+    # Check if first time (no .specify folder exists yet) - project-local detection
+    is_first_run = not (project_path / ".specify").exists()
+    create_instructions = False
+    create_scaffolding = False
+    
+    if sys.stdin.isatty():
+        # First-time onboarding prompt
+        if is_first_run:
+            console.print()
+            create_instructions = typer.confirm(
+                "Create instructions.md with Spec Kit getting started guide?",
+                default=True
+            )
+        
+        # Greenfield scaffolding prompt
+        if selected_project_type == "greenfield":
+            console.print()
+            create_scaffolding = typer.confirm(
+                "Create docs/ folder with architecture, roadmap, and ideas templates?",
+                default=True
+            )
+
     console.print(f"[cyan]Selected AI assistant:[/cyan] {selected_ai}")
     console.print(f"[cyan]Selected script type:[/cyan] {selected_script}")
+    console.print(f"[cyan]Project type:[/cyan] {selected_project_type}")
+    if project_description:
+        console.print(f"[cyan]Description:[/cyan] {project_description[:50]}{'...' if len(project_description) > 50 else ''}")
 
     tracker = StepTracker("Initialize Specify Project")
 
@@ -1101,6 +1878,8 @@ def init(
     tracker.complete("ai-select", f"{selected_ai}")
     tracker.add("script-select", "Select script type")
     tracker.complete("script-select", selected_script)
+    tracker.add("context-select", "Select project context")
+    tracker.complete("context-select", selected_project_type)
     for key, label in [
         ("fetch", "Fetch latest release"),
         ("download", "Download template"),
@@ -1108,6 +1887,7 @@ def init(
         ("zip-list", "Archive contents"),
         ("extracted-summary", "Extraction summary"),
         ("chmod", "Ensure scripts executable"),
+        ("context", "Create project context"),
         ("cleanup", "Cleanup"),
         ("git", "Initialize git repository"),
         ("final", "Finalize")
@@ -1127,6 +1907,16 @@ def init(
             download_and_extract_template(project_path, selected_ai, selected_script, here, verbose=False, tracker=tracker, client=local_client, debug=debug, github_token=github_token)
 
             ensure_executable_scripts(project_path, tracker=tracker)
+
+            # Create project context file
+            create_project_context(project_path, selected_project_type, project_description, tracker=tracker)
+
+            # Create optional scaffolding files
+            if create_instructions:
+                create_instructions_file(project_path, tracker=tracker)
+            
+            if create_scaffolding:
+                create_greenfield_scaffolding(project_path, tracker=tracker)
 
             if not no_git:
                 tracker.start("git")
@@ -1360,6 +2150,257 @@ def version():
 
     console.print(panel)
     console.print()
+
+
+@app.command()
+def context(
+    show: bool = typer.Option(False, "--show", help="Display current project context"),
+    set_type: str = typer.Option(None, "--set-type", help="Update project type (greenfield, brownfield, bluefield)"),
+    set_description: str = typer.Option(None, "--set-description", help="Update project description"),
+    add_constraint: str = typer.Option(None, "--add-constraint", help="Add a constraint to the project"),
+    remove_constraint: int = typer.Option(None, "--remove-constraint", help="Remove constraint by index (1-based)"),
+):
+    """
+    View or update project context settings.
+    
+    Project context helps AI assistants understand your project type and provide
+    more accurate, realistic specifications and implementations.
+    
+    Examples:
+        specify context --show                                    # View current context
+        specify context --set-type brownfield                     # Change to brownfield project
+        specify context --set-description "API service"           # Update description
+        specify context --add-constraint "Must not change API"    # Add a constraint
+        specify context --remove-constraint 1                     # Remove first constraint
+    """
+    context_file = Path.cwd() / ".specify" / "context.yaml"
+    
+    if not context_file.exists():
+        console.print("[red]Error:[/red] No context.yaml found in current directory")
+        console.print("[dim]Run 'specify init .' in a Spec Kit project, or create .specify/context.yaml manually[/dim]")
+        raise typer.Exit(1)
+    
+    # Read current context
+    content = context_file.read_text()
+    
+    # Simple YAML parsing for our known structure
+    def get_yaml_value(text: str, key: str) -> str:
+        for line in text.split("\n"):
+            if line.startswith(f"{key}:"):
+                value = line.split(":", 1)[1].strip()
+                # Remove quotes if present
+                if value.startswith('"') and value.endswith('"'):
+                    value = value[1:-1]
+                elif value.startswith("'") and value.endswith("'"):
+                    value = value[1:-1]
+                return value
+        return ""
+    
+    def set_yaml_value(text: str, key: str, new_value: str) -> str:
+        lines = text.split("\n")
+        for i, line in enumerate(lines):
+            if line.startswith(f"{key}:"):
+                # Preserve indentation and handle special characters
+                if any(c in new_value for c in ":#{}[]&*!|>'\"%@`"):
+                    lines[i] = f'{key}: "{new_value}"'
+                else:
+                    lines[i] = f"{key}: {new_value}"
+                break
+        return "\n".join(lines)
+    
+    def get_yaml_list(text: str, key: str) -> list:
+        """Extract a YAML list from the text."""
+        lines = text.split("\n")
+        result = []
+        in_list = False
+        for line in lines:
+            if line.startswith(f"{key}:"):
+                in_list = True
+                continue
+            if in_list:
+                if line.strip().startswith("- "):
+                    item = line.strip()[2:].strip()
+                    # Remove quotes if present
+                    if item.startswith('"') and item.endswith('"'):
+                        item = item[1:-1]
+                    elif item.startswith("'") and item.endswith("'"):
+                        item = item[1:-1]
+                    result.append(item)
+                elif line.strip() and not line.strip().startswith("#") and not line.strip().startswith("-"):
+                    break  # End of list
+        return result
+    
+    def set_yaml_list(text: str, key: str, items: list) -> str:
+        """Set a YAML list in the text."""
+        lines = text.split("\n")
+        new_lines = []
+        in_list = False
+        list_done = False
+        
+        for line in lines:
+            if line.startswith(f"{key}:"):
+                new_lines.append(f"{key}:")
+                for item in items:
+                    # Handle special characters in list items
+                    if any(c in item for c in ":#{}[]&*!|>'\"%@`"):
+                        new_lines.append(f'  - "{item}"')
+                    else:
+                        new_lines.append(f"  - {item}")
+                if not items:
+                    new_lines.append("  # (none)")
+                in_list = True
+                list_done = True
+                continue
+            
+            if in_list:
+                if line.strip().startswith("- ") or (line.strip().startswith("#") and list_done):
+                    continue  # Skip old list items and inline comments
+                elif line.strip() and not line.strip().startswith("#"):
+                    in_list = False
+                    new_lines.append(line)
+                continue
+            
+            new_lines.append(line)
+        
+        return "\n".join(new_lines)
+    
+    def get_yaml_dict(text: str, key: str) -> dict:
+        """Extract a YAML nested dict from the text (for linked_artifacts)."""
+        lines = text.split("\n")
+        result = {}
+        in_dict = False
+        current_key = None
+        
+        for line in lines:
+            if line.startswith(f"{key}:"):
+                in_dict = True
+                continue
+            if in_dict:
+                stripped = line.strip()
+                if not stripped or stripped.startswith("#"):
+                    continue
+                # Check for sub-key (e.g., "jira:" or "docs:")
+                if ":" in stripped and not stripped.startswith("-"):
+                    sub_key = stripped.split(":")[0].strip()
+                    if not sub_key.startswith("#"):
+                        current_key = sub_key
+                        result[current_key] = []
+                elif stripped.startswith("- ") and current_key:
+                    item = stripped[2:].strip()
+                    if item.startswith('"') and item.endswith('"'):
+                        item = item[1:-1]
+                    result[current_key].append(item)
+                elif not stripped.startswith("-") and not stripped.startswith("#") and line[0] not in " \t":
+                    break  # End of dict section
+        return result
+    
+    current_type = get_yaml_value(content, "project_type")
+    current_description = get_yaml_value(content, "description")
+    current_constraints = get_yaml_list(content, "constraints")
+    current_artifacts = get_yaml_dict(content, "linked_artifacts")
+    current_version = int(get_yaml_value(content, "version") or "1")
+    
+    if show or (not set_type and not set_description and not add_constraint and remove_constraint is None):
+        # Display current context
+        console.print()
+        context_table = Table(show_header=False, box=None, padding=(0, 2))
+        context_table.add_column("Key", style="cyan", justify="right")
+        context_table.add_column("Value", style="white")
+        
+        type_display = current_type
+        if current_type in PROJECT_TYPE_CHOICES:
+            type_display = f"{current_type} - {PROJECT_TYPE_CHOICES[current_type]}"
+        
+        context_table.add_row("Project Type", type_display)
+        context_table.add_row("Description", current_description or "[dim](not set)[/dim]")
+        
+        # Display constraints
+        if current_constraints:
+            for i, constraint in enumerate(current_constraints, 1):
+                label = "Constraints" if i == 1 else ""
+                context_table.add_row(label, f"[yellow]{i}.[/yellow] {constraint}")
+        else:
+            context_table.add_row("Constraints", "[dim](none)[/dim]")
+        
+        context_table.add_row("Context File", str(context_file))
+        
+        panel = Panel(
+            context_table,
+            title="[bold cyan]Project Context[/bold cyan]",
+            border_style="cyan",
+            padding=(1, 2)
+        )
+        console.print(panel)
+        
+        # Show available types
+        console.print()
+        console.print("[dim]Available project types:[/dim]")
+        for key, desc in PROJECT_TYPE_CHOICES.items():
+            marker = "●" if key == current_type else "○"
+            console.print(f"  {marker} [cyan]{key}[/cyan] - {desc}")
+        console.print()
+        return
+    
+    # Update context
+    modified = False
+    new_type = current_type
+    new_description = current_description
+    new_constraints = current_constraints.copy()
+    
+    if set_type:
+        if set_type not in PROJECT_TYPE_CHOICES:
+            console.print(f"[red]Error:[/red] Invalid project type '{set_type}'")
+            console.print(f"[dim]Choose from: {', '.join(PROJECT_TYPE_CHOICES.keys())}[/dim]")
+            raise typer.Exit(1)
+        
+        content = set_yaml_value(content, "project_type", set_type)
+        new_type = set_type
+        modified = True
+        console.print(f"[green]✓[/green] Project type updated to: [cyan]{set_type}[/cyan]")
+    
+    if set_description:
+        content = set_yaml_value(content, "description", set_description)
+        new_description = set_description
+        modified = True
+        console.print(f"[green]✓[/green] Description updated")
+    
+    if add_constraint:
+        new_constraints.append(add_constraint)
+        content = set_yaml_list(content, "constraints", new_constraints)
+        modified = True
+        console.print(f"[green]✓[/green] Constraint added: [yellow]{add_constraint}[/yellow]")
+    
+    if remove_constraint is not None:
+        if remove_constraint < 1 or remove_constraint > len(new_constraints):
+            console.print(f"[red]Error:[/red] Invalid constraint index {remove_constraint}")
+            console.print(f"[dim]Valid range: 1-{len(new_constraints)}[/dim]")
+            raise typer.Exit(1)
+        removed = new_constraints.pop(remove_constraint - 1)
+        content = set_yaml_list(content, "constraints", new_constraints)
+        modified = True
+        console.print(f"[green]✓[/green] Constraint removed: [yellow]{removed}[/yellow]")
+    
+    if modified:
+        # Update the updated timestamp and version
+        now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        new_version = current_version + 1
+        content = set_yaml_value(content, "updated", now)
+        content = set_yaml_value(content, "version", str(new_version))
+        context_file.write_text(content)
+        console.print(f"[dim]Context saved to {context_file}[/dim]")
+        
+        # Regenerate the AI reference file
+        generate_context_reference(
+            project_path=Path.cwd(),
+            project_type=new_type,
+            description=new_description,
+            constraints=new_constraints,
+            linked_artifacts=current_artifacts,
+            timestamp=now,
+            version=new_version
+        )
+        console.print(f"[dim]AI reference updated at memory/context.md[/dim]")
+
 
 def main():
     app()

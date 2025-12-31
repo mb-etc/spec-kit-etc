@@ -1,0 +1,3 @@
+We should prompt the user on the install of spec kit to ask them if htis is th efirst time running and if they want a spec-kit instructions.md file placed in the root of their directory for further instructions. 
+
+additionally if greenfield is selected one thing thats lacking right now is any sort of guidance on how to inilize the project - i know we start with the constitution but that just seems generally unclear to the user. I think there needs to be some sort of project architecture, roadmap/ideas place to put things, in addition to anythign else you can think of that would be useful. 

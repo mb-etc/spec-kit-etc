@@ -2009,11 +2009,20 @@ def init(
 
     steps_lines.append(f"{step_num}. Start using slash commands with your AI agent:")
 
-    steps_lines.append("   2.1 [cyan]/speckit.constitution[/] - Establish project principles")
-    steps_lines.append("   2.2 [cyan]/speckit.specify[/] - Create baseline specification")
-    steps_lines.append("   2.3 [cyan]/speckit.plan[/] - Create implementation plan")
-    steps_lines.append("   2.4 [cyan]/speckit.tasks[/] - Generate actionable tasks")
-    steps_lines.append("   2.5 [cyan]/speckit.implement[/] - Execute implementation")
+    # Show different first step for greenfield projects
+    if selected_project_type == "greenfield":
+        steps_lines.append("   2.1 [cyan]/speckit.initialize[/] - Bootstrap project vision, architecture & roadmap")
+        steps_lines.append("   2.2 [cyan]/speckit.constitution[/] - Establish project principles")
+        steps_lines.append("   2.3 [cyan]/speckit.specify[/] - Create baseline specification")
+        steps_lines.append("   2.4 [cyan]/speckit.plan[/] - Create implementation plan")
+        steps_lines.append("   2.5 [cyan]/speckit.tasks[/] - Generate actionable tasks")
+        steps_lines.append("   2.6 [cyan]/speckit.implement[/] - Execute implementation")
+    else:
+        steps_lines.append("   2.1 [cyan]/speckit.constitution[/] - Establish project principles")
+        steps_lines.append("   2.2 [cyan]/speckit.specify[/] - Create baseline specification")
+        steps_lines.append("   2.3 [cyan]/speckit.plan[/] - Create implementation plan")
+        steps_lines.append("   2.4 [cyan]/speckit.tasks[/] - Generate actionable tasks")
+        steps_lines.append("   2.5 [cyan]/speckit.implement[/] - Execute implementation")
 
     steps_panel = Panel("\n".join(steps_lines), title="Next Steps", border_style="cyan", padding=(1,2))
     console.print()
@@ -2044,6 +2053,22 @@ def init(
     review_panel = Panel("\n".join(review_lines), title="Review Commands", border_style="magenta", padding=(1,2))
     console.print()
     console.print(review_panel)
+
+    # Greenfield-specific tip
+    if selected_project_type == "greenfield":
+        console.print()
+        greenfield_tip = Panel(
+            "Since this is a [bold]greenfield project[/bold], start by running [cyan]/speckit.initialize[/cyan] to have a conversation about your project vision.\n\n"
+            "This will populate your [cyan]docs/architecture.md[/cyan], [cyan]docs/roadmap.md[/cyan], and [cyan]docs/ideas.md[/cyan] files, "
+            "giving you a solid foundation before establishing your constitution and specifying features.\n\n"
+            "[dim]Tip: You can paste an initial idea or project description after the command:[/dim]\n"
+            "[cyan]/speckit.initialize I want to build a task management app with real-time collaboration...[/cyan]\n\n"
+            "[dim]Feel free to use AI to flesh out your idea first - the more context you provide, the better![/dim]",
+            title="[green]💡 Greenfield Tip[/green]",
+            border_style="green",
+            padding=(1, 2)
+        )
+        console.print(greenfield_tip)
 
 @app.command()
 def check():

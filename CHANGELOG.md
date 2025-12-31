@@ -7,6 +7,16 @@ All notable changes to the Specify CLI and templates are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.26] - 2025-12-31
+
+### Added
+
+- **Initialize Command** (`/speckit.initialize`): New bootstrapping command for greenfield projects
+  - Conversational workflow to explore project vision, scope, and technical direction
+  - Automatically populates `docs/architecture.md`, `docs/roadmap.md`, and `docs/ideas.md`
+  - Hands off to `/speckit.constitution` when complete
+  - Greenfield projects now show `/speckit.initialize` as the first recommended step
+
 ## [0.0.25] - 2025-12-31
 
 ### Added
